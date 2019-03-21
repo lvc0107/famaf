@@ -1,0 +1,82 @@
+
+ejemplo newvar. in ISWIM
+
+[[newvar x := ref 1 in val x := 0]]ησ = 
+
+[[ref 1]]ησ
+
+= (λ<σ1,z> ∈ ΣxV ιnorm([σ1 | r:z], ιrefr))*([[1]]ησ) 
+con r = new(σ1)
+= (λ<σ1,z> ∈ ΣxV ιnorm([σ1 | r:z], ιrefr))*(ιnorm(<σ, ιint1>)
+= (λ<σ1,z> ∈ ΣxV ιnorm([σ1 | r:z], ιrefr))(<σ, ιint1>)
+= ιnorm<[σ |r:ιint1], ιrefr>
+con r = new(σ)
+
+[[val x := 0]][η |x: ιrefr2][σ | r2: ιref r | r:ιint1] =
+
+Definimos
+η' = [η |x: ιrefr2] 
+σ' = [σ |r2: ιrefr |r: ιint1]
+
+
+[[val x := 0]]η'σ' = 
+(λ<σ1,r3> ∈ ΣxVref ( λ<σ2,z> ∈ ΣxV ιnorm([σ2 | r3 :z], z)) *([[0]]η σ1)ref*([[val x]]η'σ')
+
+
+[[val x]]ησ 
+= (λ<σ2,r4> ∈ ΣxVref {
+					  ιnorm(<σ2 σ2r>) si r ∈ dom(σ2)
+					  err  				cc	
+					  )ref*([[x]]η'σ')
+
+= (λ<σ2,r4> ∈ ΣxVref {
+					  ιnorm(<σ2 σ2r>) si r ∈ dom(σ2)
+					  err  				cc	
+					  )ref*(ιnorm<σ', η'x>)
+
+= (λ<σ',r> ∈ ΣxVref {
+					  ιnorm(<σ2 σ2r>) si r ∈ dom(σ2)
+					  err  				cc	
+					  )ref*(ιnorm <σ', ιref r2>)
+
+= (λ<σ',r> ∈ ΣxVref {
+					  ιnorm(<σ2 σ2r>) si r ∈ dom(σ2)
+					  err  				cc	
+					  )ref(<σ', ιref r2>)
+
+
+= (λ<σ',r> ∈ ΣxVref {
+					  ιnorm(<σ2 σ2r>) si r ∈ dom(σ2)
+					  err  				cc	
+					  )(<σ', r2>)
+
+= (λ<σ',r> ∈ ΣxVref {
+					  ιnorm(<σ2 σ2r>) si r ∈ dom(σ2)
+					  err  				cc	
+					  )(<σ', ιrefr>)
+	
+= ιnorm(<σ', ιintr>)	
+
+
+Volvemos a 
+
+[[val x := 0]]η'σ' = 
+(λ<σ1,r3> ∈ ΣxVref ( λ<σ2,z> ∈ ΣxV ιnorm([σ2 | r3 :z], z)) *([[0]]η' σ1)ref*(ιnorm(<σ', ιrefr>))
+
+= 
+(λ<σ1,r3> ∈ ΣxVref ( λ<σ2,z> ∈ ΣxV ιnorm([σ2 | r3 :z], z)) *([[0]]η'σ1)ref(<σ', ιrefr>)
+
+= 
+(λ<σ1,r3> ∈ ΣxVref ( λ<σ2,z> ∈ ΣxV ιnorm([σ2 | r3 :z], z)) *([[0]]η'σ1)(<σ',r>)
+
+= 
+(λ<σ1,r3> ∈ ΣxVref ( λ<σ2,z> ∈ ΣxV ιnorm([σ2 | r3 :z], z)) *(ιnorm(<σ1, ιint0>))(<σ',r>)
+
+= 
+(λ<σ1,r3> ∈ ΣxVref ( λ<σ2,z> ∈ ΣxV ιnorm([σ2 | r3 :z], z)) (<σ1, ιint0>))(<σ',r>)
+
+= 
+(λ<σ1,r3> ∈ ΣxVref (ιnorm([σ1 |r3 : ιint0], ιint0))(<σ',r>)
+
+= ιnorm([σ' |r : ιint0], ιint0)
+

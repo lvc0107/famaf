@@ -1,0 +1,25 @@
+
+Evaluacion Eager
+[[<0, ΔΔ>]]η =
+
+= (λz1 ∈ V (λz2 ∈ V ιnorm(ιtuple(<z1, z2>))) *([[0]]η)*([[ΔΔ]]η)
+= (λz1 ∈ V (λz2 ∈ V ιnorm(ιtuple(<z1, z2>))) *(ιnorm(ι int0))*(⊥)
+= (λz1 ∈ V (λz2 ∈ V ιnorm(ιtuple(<z1, z2>))) (ιint0))*(⊥)
+= (λz1 ∈ V ιnorm(ιtuple(<(ιint 0), z2>)))*⊥
+= ⊥
+
+
+Evaluacion Normal
+[[<0, ΔΔ>]]η = <[[0]]η, [[ΔΔ]]η>
+
+Otro ejemplo 
+
+Evaluacion Eager
+[[<0 +. True, ΔΔ>]]η =
+
+= (λz1 ∈ V (λz2 ∈ V ιnorm(ιtuple(<z1, z2>))) *([[0 + True]]η)*([[ΔΔ]]η)
+= (λz1 ∈ V (λz2 ∈ V ιnorm(ιtuple(<z1, z2>))) *(tyerr)*(⊥)
+tyerr
+
+
+TEngo dudas si da tyerr o ⊥

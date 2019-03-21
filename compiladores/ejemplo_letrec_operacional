@@ -1,0 +1,58 @@
+Evaluacion Eager de letrec en leguaje Aplicativo
+
+letrec f ≡ λx if x <= 1 then 1 else f(x-1) * x in f2
+
+
+letrec f ≡ λx if x <= 1 then 1 else f(x-1) * x in f2
+
+sea e₀ = if x <= 1 then 1 else f(x-1) * x
+
+	f2/f -> λx letrec f ≡ λx e₀ in e₀
+=	
+
+(λx letrec f ≡ λx e₀ in e₀)2
+
+λx letrec f ≡ λx e₀ in e₀ => λx letrec f ≡ λx e₀ in e₀
+2 => 2
+letrec f ≡ λx e₀ in if 2 <= 1 then 1 else f(2-1) * 2
+
+Aplicar regla de letrec de nuevo
+
+
+(if 2 <= 1 then 1 else f(2-1) * 2)/f -> λx letrec f ≡ λx e₀ in e₀
+= 
+
+(if 2 <= 1 then 1 else (λx letrec f ≡ λx e₀ in e₀) (2-1) * 2)
+
+Evaluacion del if
+
+2 <= 1 => False
+
+(if 2 <= 1 then 1 else (λx letrec f ≡ λx e₀ in e₀)(2-1) * 2) =>
+
+	(λx letrec f ≡ λx e₀ in e₀)(2-1) * 2)
+Evaluacion del producto
+
+
+a) 2 => 2
+
+b) (λx letrec f ≡ λx e₀ in e₀)(2-1)
+Aplicacion
+	ba)λx letrec f ≡ λx e₀ in e₀ => λx letrec f ≡ λx e₀ in e₀
+	bb)(2-1) => 1
+	bc) letrec f ≡ λx e₀ in e₀/v -> 1 => 
+		letrec f ≡ λx e₀ in if 1 <= 1 then 1 else f(1-1) * 1)
+Regla de letrec de nuevo
+	
+	bca) (if 1 <= 1 then 1 else f(1-1) * 1)/f -> λx letrec f ≡ λx e₀ in e₀
+		= 
+		(if 1 <= 1 then 1 else (λx letrec f ≡ λx e₀ in e₀)(1-1) * 1)
+
+	regla del if 
+		1 <= 1 => True			
+		(if 1 <= 1 then 1 else (λx letrec f ≡ λx e₀ in e₀)(1-1) * 1)
+		=> 1
+	=> 1
+=> 1 * 2
+=> 2
+			

@@ -1,0 +1,79 @@
+Evaluar con e = ( val x ) := 1
+
+[[newvar x := mkref 0 in e ]]η[]
+
+ = 
+[[newvar x := mkref 0 in (val x) := 1]]η[]
+
+
+[[ref 0]]η[] = (λ<σ', z> ∈ ΣxV ιnorm([σ'| r:z], ιrefr))*([[0]]η[])
+= (λ<σ', z> ∈ ΣxV ιnorm([σ'| r:z], ιrefr))*(ιnorm(<[],ιint0>)
+= (λ<σ', z> ∈ ΣxV ιnorm([σ'| r:z], ιrefr))(<[],ιint0>)
+= ιnorm([r:ιint0], ιrefr) con r= new([])
+
+[[newvar x := mkref 0 in (val x) := 1]]η[]
+=
+[[(val x) := 1]][η |x : ιrefr2 ][ r2:ιrefr | r:ιint0]
+
+sea
+
+η' = [η |x : ιrefr2]
+σ = [r2:ιrefr | r:ιint0]
+
+
+= (λ<σ', r> ∈ ΣxVref (λ<σ'', z> ∈ ΣxV ιnorm([σ''| r:z], z))*([[1]]η'σ')ref*([[val x]]η'σ)
+
+= (λ<σ', r> ∈ ΣxVref (λ<σ'', z> ∈ ΣxV ιnorm([σ''| r:z], z))*(ιnorm(σ', ιint1 ))ref*([[val x]]η'σ)
+
+= (λ<σ', r> ∈ ΣxVref (λ<σ'', z> ∈ ΣxV ιnorm([σ''| r:z], z))(<σ', ιint1>))ref*([[val x]]η'σ)
+
+= (λ<σ', r> ∈ ΣxVref ιnorm([σ'| r: ιint1], ιint1))ref*([[val x]]η'σ)
+
+[[val x]]η'σ = (λ<σ', r> ∈ ΣxVref {
+									ιnorm(σ', σ'r)  si r ∈ dom(σ')
+									err	 cc
+							)ref*([[x]]η'σ)
+
+= (λ<σ', r> ∈ ΣxVref {
+						ιnorm(σ', σ'r)  si r ∈ dom(σ')
+						err	 cc
+					)ref*(ιnorm(σ, η'x))
+
+
+= (λ<σ', r> ∈ ΣxVref {
+						ιnorm(σ', σ'r)  si r ∈ dom(σ')
+						err	 cc
+					)ref*(ιnorm(σ, ιrefr2))
+
+
+= (λ<σ', r> ∈ ΣxVref {
+						ιnorm(σ', σ'r)  si r ∈ dom(σ')
+						err	 cc
+					)ref(σ, ιrefr2)
+
+
+= (λ<σ', r> ∈ ΣxVref {
+						ιnorm(σ', σ'r)  si r ∈ dom(σ')
+						err	 cc
+					)<σ, r2>
+
+
+= ιnorm(σ,r2)
+= ιnorm(σ,ιrefr)
+
+
+volviendo a
+
+(λ<σ', r> ∈ ΣxVref (λ<σ'', z> ∈ ΣxV ιnorm([σ''| r:z], z))(<σ', ιint1>))ref*([[val x]]η'σ)
+
+=   
+
+(λ<σ', r> ∈ ΣxVref (λ<σ'', z> ∈ ΣxV ιnorm([σ''| r:z], z))(<σ', ιint1>))ref*(ιnorm(σ,ιrefr))
+
+
+= (λ<σ', r> ∈ ΣxVref (λ<σ'', z> ∈ ΣxV ιnorm([σ''| r:z], z))(<σ', ιint1>))ref(σ,ιrefr)
+= (λ<σ', r> ∈ ΣxVref (λ<σ'', z> ∈ ΣxV ιnorm([σ''| r:z], z))(<σ', ιint1>))<σ,r>
+= (λ<σ', r> ∈ ΣxVref ιnorm([σ'| r: ιint1], ιint1))<σ,r>
+= ιnorm([σ| r: ιint1], ιint1))
+
+= ιnorm<[r2:ιrefr | r:ιint1], ιint1 >

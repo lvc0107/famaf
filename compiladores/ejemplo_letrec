@@ -1,0 +1,419 @@
+
+[[(λ fib letrec f ≡ λx if x <= 1 then fib := 1 else fib := f(x-1) + val fib in f2)(ref 2) ]]ησ
+
+	Tenemos una aplicacion. Aplicamos regla:
+	[[ee']]η σ = (λ<σ',h> ∈ ΣxVfun h*[[e']]η σ')fun*([[e]]η σ)
+
+
+(λ<σ',h> ∈ ΣxVfun h*[[ref 2 ]]η σ') fun* ([[ λ fib letrec f ≡ ..... f2]]η σ)
+
+	Calculemos el valor de la funcion
+
+[[λ fib letrec f ≡ ....f2]]η σ = ιnorm(σ, ιfun (λ<σ'',z> ∈ ΣxV [[letrec f ≡ ....f2]][η| fib: z]σ''))
+
+(λ<σ',h> ∈ ΣxVfun h*[[ref 2 ]]η σ') fun* (ιnorm(<σ, ιfun (λ<σ'',z> ∈ ΣxV [[ letrec f ≡ .... f2]][η| fib: z]σ'')>))
+
+
+	Aplicamos regla f*(ιnorm<σ, z>) = f(<σ, z>)
+
+(λ<σ',h> ∈ ΣxVfun h*[[ref 2 ]]η σ') fun <σ, ιfun (λ<σ'',z> ∈ ΣxV [[letrec f ≡ ....f2]][η| fib : z]σ'')>
+
+
+	Aplicamos regla fθ(<σ, ι θz>) = f(<σ, z>)
+
+(λ<σ',h> ∈ ΣxVfun h*[[ref 2 ]]η σ') (<σ, (λ<σ'',z> ∈ ΣxV [[letrec f ≡ ... f2]][η| fib : z]σ'')>)
+
+	Aplicamos argumento
+
+(λ<σ',z> ∈ ΣxV [letrec .... f2]][η| fib: z] σ')*[[ref 2 ]]η σ) 
+
+
+
+	El Argumento es facil de calcular
+
+
+[[ref 2 ]]η σ = (λ<σ', z> ∈ Σx V <[σ'|r : z], z>)*([[2]]ησ) con r = new(σ')
+
+= (λ<σ', z> ∈ Σx V <[σ'|r : z], ιrefr>)*(ιnorm(<σ, ιint2)>) con r = new(σ')
+= (λ<σ', z> ∈ Σx V <[σ'|r : z], ιrefr>)(<σ, ιint2))			con r = new(σ')
+= <[σ|r : ιint2] , ιrefr > 									con r = new(σ)
+
+
+(λ<σ',z> ∈ ΣxV [[letrec .... f2]][η| fib: z] σ')*(<[σ|r : ιint2] , ιrefr>) 
+
+(λ<σ',z> ∈ ΣxV [[letrec .... f2]][η| fib: z] σ')(<[σ|r : ιint2] , ιrefr>) 
+
+	Aplicamos argumento
+
+[[letrec .... f2]][η| fib: ιrefr][σ|r : ιint2] 
+
+	Hasta aca tenemos una funcion que recibe como parametro [[ref2]]
+	vamos a ver que hace la funcion con ese paremetro
+
+
+[[letrec .... f2]][η| fib: ιrefr][σ|r : ιint2] 
+
+	Aplicar semantica de letrec :
+	[[letrec f ≡ λx e₀ in e]]ησ = [[e]][η| f : ιfun g]σ
+	con g = YVfunF ; Fw<σ', z'> = [[e₀]][η| f: ιfun	w | x: z']σ'
+
+=
+
+[[f2]][η| fib: ιrefr | f: ιfung ][σ|r : ιint2] ; con g= YVfunF. y 
+
+Fw<σ', z'> = [[if x <= 1 then fib := 1 else fib := f(x-1) + val fib ]]
+[η| fib: ιrefr 
+  | f: ιfunw 
+  | x: z']
+[σ'| r : ιint2] 
+
+llamemos
+η' = [η| fib: ιrefr | f: ιfunw | x: z']
+σ' = [σ| r : ιint2] 
+
+
+ 	El caso base es fib := 1 cuando x <= 1
+
+[[x<=1]]η'σ'  	= (λ<σi,i> ∈ ΣxVint (λ<σj,j> ∈ ΣxVint ιnorm(σj, ιbool(i < = j))) 
+				int*([[1]]η' σi) int*([[x]]η' σ')
+
+				= (λ<σi,i> ∈ ΣxVint (λ<σj,j> ∈ ΣxVint ιnorm (σj, ιbool(i <= j))) 
+				int*( ιnorm (σi, ιint1)) int*( ιnorm (σ' , η'x))
+
+				= (λ<σi,i> ∈ ΣxVint (λ<σj,j> ∈ ΣxVint ιnorm (σj, ιbool(i <= j))) 
+				int*( ιnorm (σi, ιint1)) int*(ιnorm (σ' , z'))
+
+				= (λ<σi,i> ∈ ΣxVint (λ<σj,j> ∈ ΣxVint ιnorm (σj, ιbool(i <= j))) 
+				int(<σi, ιint1>) int( <σ' , z'>)
+
+				= (λ<σi,i> ∈ ΣxVint (λ<σj,j> ∈ ΣxVint ιnorm (σj, ιbool(i <= j))) 
+				<σi, 1> int( <σ' , z'>)
+				
+				= (λ<σi,i> ∈ ΣxVint ιnorm (σi, ιbool(i <= 1))) int( σ' , z')
+
+				{ ιnorm(σ', ιbool( z' <= 1))
+				  tyerr si z' = ιθn y θ != int
+
+
+Fw<σ', z'> = {
+			[[ fib := 1]]η'σ'					si z' = ιintn y n <= 1  
+			[[ fib := f(x-1) + val fib ]]η'σ'   si z' = ιintn y n > 1
+			tyerr								si z' = ιθn y θ != int
+
+
+	Notamos ademas que fib debe ser una referencia 
+
+
+
+Fw<σ', z'> = {
+			
+1) [[ fib := 1]]η'σ'					si z' = ιintn y n <= 1 y fib = ιrefr
+2) [[ fib := f(x-1) + val fib ]]η'σ'    si z' = ιintn y n > 1 y fib = ιrefr
+3) tyerr								si z' = ιintn y fib != ιrefr
+4) tyerr								si z' = ιθn y θ != int
+
+ 		
+ 	Los casos 1, 3 y 4 son defenitivos. El caso 2 es el que contiene la llamada recursiva. 
+
+
+completemos el caso 1 y luego seguimos con el caso 2
+
+[[ fib := 1]]η'σ' 	= (λ<σ1,r1> ∈ ΣxVref(λ<σ2, z> x ΣxV ιnorm(<[σ2|r:z ], z>))*
+					([[1]]η' σ1))ref*([[fib]]η'σ')
+
+
+					= (λ<σ1,r1> ∈ ΣxVref ιnorm(<[σ1|r1:ιint1 ], ιint1>))ref*([[fib]]η'σ')
+
+					= (λ<σ1,r1> ∈ ΣxVref ιnorm(<[σ1|r1:ιint1 ], ιint1>))ref*
+					(ιnorm(σ', η'fib ))
+
+					= (λ<σ1,r1> ∈ ΣxVref ιnorm(<[σ1|r1:ιint1 ], ιint1>))ref*
+					(ιnorm(σ', ιrefr ))
+
+					= (λ<σ1,r1> ∈ ΣxVref ιnorm(<[σ1|r1:ιint1 ], ιint1>))ref(σ', ιrefr )
+
+					= (λ<σ1,r1> ∈ ΣxVref ιnorm(<[σ1|r1:ιint1 ], ιint1>))<σ', r >
+					
+					= ιnorm(<[σ'|r:ιint1 ], ιint1>))
+
+
+Fw<σ', z'> = {
+			
+1) ιnorm(<[σ'|r:ιint1 ], ιint1>))	 si z' = ιintn y n <= 1 y fib = ιrefr
+2) [[ fib := f(x-1) + val fib ]]η'σ' si z' = ιintn y n > 1 y fib = ιrefr
+3) tyerr							si z' = ιintn y fib != ιrefr
+4) tyerr							si z' = ιθn y θ != int
+
+
+Listo el caso 1 . Ahora el caso mas dificil, el recursivo
+
+
+[[fib := f(x-1) + val fib ]]η'σ' con 	z' = ιintn,
+								 		n > 1,
+								 		fib == ιrefr
+
+
+Veamos primero 
+[[f(x-1) + val fib ]]η'σ' = (λ<σ1, i> ∈ ΣxVint
+							(λ<σ2, j> ∈ ΣxVint ιnorm( σ2, ιint(i + j)))
+							int*([[ val fib]]η' σ1)
+							int*([[f(x-1)]]η'σ')) 
+
+Veamos ahora
+
+[[val fib ]]η'σ' = (λ<σ1, r1> ∈ ΣxVref { ιnorm <d1, σ1r1> si r1 ∈ dom(σ1)
+										err  cc
+										)ref*([[fib]]η'σ')
+
+				= (λ<σ1, r1> ∈ ΣxVref { ιnorm <d1, σ1r1> si r1 ∈ dom(σ1)
+										err  cc
+										)ref*(ιnorm (σ', η'fib))
+
+				= (λ<σ1, r1> ∈ ΣxVref { ιnorm <σ1, σ1r1> si r1 ∈ dom(σ1)
+										err  cc
+										)ref*(ιnorm (σ', ιrefr))
+
+				
+				= { ιnorm <σ', r> si r ∈ dom(σ')
+					err  cc
+
+En este punto actualizamos la suma
+
+
+[[f(x-1) + val fib ]]η'σ' = (λ<σ1, i> ∈ ΣxVint
+							{ ιnorm( σ1, ιint(i + n))) si r ∈ dom(σ1) y r = ιintn
+							tyerr si r ∈ dom(σ1) y r = ιθn Θ != int
+							err si r ∉ dom(σ1)
+							)int*([[f(x-1)]]η'σ')) 
+
+
+
+[[f(x - 1) ]]η'σ' = (λ<σ1, h> ∈ ΣxVfun h*[[x-1]]η'σ1')fun*([[f]]η'σ')
+				  = (λ<σ1, h> ∈ ΣxVfun h*[[x-1]]η'σ1')fun*(ιnorm(σ', η'f))
+				  = (λ<σ1, h> ∈ ΣxVfun h*[[x-1]]η'σ1')fun*(ιnorm(σ', ιfunw))
+				  = (λ<σ1, h> ∈ ΣxVfun h*[[x-1]]η'σ1')fun(σ', ιfunw)
+				  = (λ<σ1, h> ∈ ΣxVfun h*[[x-1]]η'σ1')<σ', w>
+				  = w*([[x-1]]η'σ')
+				  = w*<σ', ιint(n - 1)>. # recordar que en η' x = z' = ιintn
+  				  = w<σ', ιint(n - 1)>. # recordar que en η' x = z' = ιintn
+
+En este punto actualizamos la suma nuevamente
+
+
+
+[[f(x-1) + val fib ]]η'σ' = (λ<σ1, i> ∈ ΣxVint
+							{ ιnorm( σ1, ιint(i + n))) si r ∈ dom(σ1) y r = ιintn
+							tyerr si r ∈ dom(σ1) y r = ιθn Θ != int
+							err si r ∉ dom(σ1)
+							)int*w<σ', ιint(n - 1)> 
+
+
+
+[[f(x - 1) + val fib ]]η'σ' = 
+
+{ 
+ιnorm( σ', ιint(i + n))) si 	r ∈ dom(σ') y 
+								r = ιintn y 
+								w<σ', ιint(n - 1)> = ιnorm(σ' ιintj')
+tyerr 					si		r ∈ dom(σ') y r = ιθn y Θ != int
+err 					si 		r ∉ dom(σ')
+err  					si 		w<σ', ιint(n - 1)> = err
+tyerr  					si 		w<σ', ιint(n - 1)> = tyerr
+tyerr  					si 		w<σ', ιint(n - 1)> = ιnorm(σ' ιθz) y θ != int
+
+
+
+
+Completemos ahora [[fib : = ...]]
+
+{ 
+ ιnorm(<[σ'|r: ιint(j + n) ], ιint(i + n)>)) si r ∈ dom(σ') y 
+								r = ιintn y 
+								w(<σ', ιint(n - 1)) = ιnorm(σ' ιintj')
+
+tyerr 					si		r ∈ dom(σ') y r = ιθn y Θ != int
+err 					si 		r ∉ dom(σ')
+err  					si 		w<σ', ιint(n - 1)> = err
+tyerr  					si 		w<σ', ιint(n - 1)> = tyerr
+tyerr  					si 		w<σ', ιint(n - 1)> = ιnorm(σ' ιθz) y θ != int
+
+
+y finalmente completamos Fw<σ', z'>
+
+
+
+Fw<σ', z'> = {
+			
+1) ιnorm(<[σ'|r:ιint1 ], ιint1>))	 si z' = ιintn y n <= 1 y fib = ιrefr y r ∈ dom(σ')
+2) si z' = ιintn y n > 1 y fib = ιrefr y  r ∈ dom(σ')
+{ 
+
+2a) ιnorm(<[σ'|r: ιint(j + n) ], ιint(i + n)>))
+							si 		r ∈ dom(σ') y 
+									r = ιintn y 
+									w<σ', ιint(n - 1)> = ιnorm(σ' ιintj')
+
+2b) tyerr 					si		r ∈ dom(σ') y r = ιθn y Θ != int
+2c) err 					si 		r ∉ dom(σ')
+2d) err  					si 		w<σ', ιint(n - 1)> = err
+2e) tyerr  					si 		w<σ', ιint(n - 1)> = tyerr
+2f) tyerr  					si 		w<σ', ιint(n - 1)> = ιnorm(σ' ιθz) y θ != int
+
+3) tyerr							si z' = ιintn y fib != ιrefr
+4) tyerr							si z' = ιθn y θ != int
+
+Encontremos una forma generica F⊥i para aplicar el TMPF
+
+
+F⊥<σ', z'> = 
+
+			
+1) ιnorm(<[σ'|r:ιint1 ], ιint1>))	 si z' = ιintn y n <= 1 y fib = ιrefr y r ∈ dom(σ')
+2) si z' = ιintn y n > 1 y fib = ιrefr y  r ∈ dom(σ')
+{ 
+
+2a) ιnorm(<[σ'|r: ιint(j + n) ], ιint(i + n)>))
+							si 		r ∈ dom(σ') y 
+									r = ιintn y 
+									⊥<σ', ιint(n - 1)> = ιnorm(σ' ιintj')
+
+2b) tyerr 					si		r ∈ dom(σ') y r = ιθn y Θ != int
+2c) err 					si 		r ∉ dom(σ')
+2d) err  					si 		⊥<σ', ιint(n - 1)> = err
+2e) tyerr  					si 		⊥<σ', ιint(n - 1)> = tyerr
+2f) tyerr  					si 		⊥<σ', ιint(n - 1)> = ιnorm(σ' ιθz) y θ != int
+
+3) tyerr							si z' = ιintn y fib != ιrefr
+4) tyerr							si z' = ιθn y θ != int
+
+
+= 
+			
+1) ιnorm(<[σ'|r:ιint1 ], ιint1>))	si z' = ιintn y n <= 1 y fib = ιrefr y r ∈ dom(σ')
+2) ⊥ 								si z' = ιintn y n > 1
+3) tyerr							si z' = ιintn y fib != ιrefr
+4) tyerr							si z' = ιθn y θ != int
+
+
+
+F⊥^2<σ', z'> = 
+
+
+	
+1) ιnorm(<[σ'|r:ιint1 ], ιint1>))	 si z' = ιintn y n <= 1 y fib = ιrefr y r ∈ dom(σ')
+2) si z' = ιintn y n > 1 y fib = ιrefr y  r ∈ dom(σ')
+{ 
+
+2a) ιnorm(<[σ'|r: ιint(j + n) ], ιint(j + n)>))
+							si 		r ∈ dom(σ') y 
+									r = ιintn y 
+									F<σ', ιint(n - 1)> = ιnorm(σ' ιintj')
+
+2b) tyerr 					si		r ∈ dom(σ') y r = ιθn y Θ != int
+2c) err 					si 		r ∉ dom(σ')
+2d) err  					si 		F<σ', ιint(n - 1)> = err
+2e) tyerr  					si 		F<σ', ιint(n - 1)> = tyerr
+2f) tyerr  					si 		F<σ', ιint(n - 1)> = ιnorm(σ' ιθz) y θ != int
+
+3) tyerr							si z' = ιintn y fib != ιrefr
+4) tyerr							si z' = ιθn y θ != int
+
+
+Notar que si llamamos nuevamente  a F entrando con n > 1
+si n = 2  la llamada F(<σ', ιint(n - 1)) se convierte en F<σ', ιint(1)> y se ejecuta 2a)
+si n > 2 volvemos a ⊥
+
+1) ιnorm(<[σ'|r:ιint1 ], ιint1>))	si z' = ιintn y n <= 1 y fib = ιrefr y r ∈ dom(σ')
+2) ιnorm(<[σ'|r:ιint2 ], ιint2>))	si z' = ιintn y n = 2 y fib = ιrefr y r ∈ dom(σ')
+3)  ⊥ 								si z' = ιintn y n > 2
+4) tyerr							si z' = ιintn y fib != ιrefr
+5) tyerr							si z' = ιθn y θ != int
+
+
+
+el caso 2a). nos dice que siempre que ejecutamos la llamada recursiva se
+almacena en el estado el valor anterior + el actual. Parece ser fib(n)
+
+F⊥^K<σ', z'> = 
+
+1) ιnorm(<[σ'|r:ιint(fibn) ], ιint(fibn)>))	 si z' = ιintn y n <= k y fib = ιrefr y r ∈ dom(σ')
+2)  ⊥ 								si z' = ιintn y n > k
+3) tyerr							si z' = ιθn y θ != int o fib != ιrefr
+
+
+
+Finalmente proponemos como YF<σ', z'> = 
+ 
+
+1) ιnorm(<[σ'|r:ιint(fibn) ], ιint(fibn)>))	 si z' = ιintn y  fib = ιrefr y r ∈ dom(σ')
+2) err 								si z' = ιintn y  fib = ιrefr y r ∉ dom(σ')
+3) tyerr							cc
+ 
+ pero queda como tarea verificar que es correcto
+
+
+Finalmente aplicar 
+[[f2]][η| fib: ιrefr | f: ιfung ][σ|r : ιint2] con g = 
+{
+1) ιnorm(<[σ'|r:ιint(fibn) ], ιint(fibn)>))	 si z' = ιintn y  fib = ιrefr y r ∈ dom(σ')
+2) err 								si z' = ιintn y  fib = ιrefr y r ∉ dom(σ')
+3) tyerr							cc
+
+= 
+(λ<σ', h> ∈ ΣxVfun h*([[2]]η'σ')) fun*([[f]]η' σ')
+
+=  g<σ', ιnorm2>
+= ιnorm(<[σ'|r:ιint2 ], ιint2>))	
+
+																		cqd
+
+
+Nota 1:
+
+Notar que si hubiesemos querido ejecutar
+
+[[fTrue]][η| fib: ιrefr | f: ιfung ][σ|r : ιint2] 
+ hubiesemos obtenido tyerr por la regla 5
+
+Nota 2 : para que la recursion funcione correctamente
+(letrec f ≡ λx e₀ in e) debe contener una llamada recursiva a f
+es decir f aparecer libre en e₀ 
+
+
+********************************************************
+Parte 2 Probar Evaluacion 
+
+σ, (λ fib letrec f ≡ λx if x <= 1 then fib := 1 else fib := f(x-1) + val fib in f2)(ref 2) 
+
+
+
+regla de aplicacion eager 
+
+σ, e₀ => λve' σ', e₁ => z' σ', (e'/v -> z') => z, σ'' 
+___________________________________________________
+				σ, e₀e₁ => z , σ''
+
+
+a)	σ, (λ fib letrec f ≡ λx if x <= 1 then fib := 1 else fib := f(x-1) + val fib in f2) 
+
+	=>(λ fib letrec f ≡ λx if x <= 1 then fib := 1 else fib := f(x-1) + val fib in f2), σ
+
+b)	σ, ref 2 =>
+		σ , 2 => 2, σ
+		r, [σ| r: 2] con r =new(σ)
+
+c) [σ| r: 2], letrec f ≡ λx if x <=1 then r:= 1 else r: = f(x-1) + val fib in f2	
+
+
+Aplicar regla de letrec
+
+	f2/f -> λx letrec f ≡ λx e₀ in e₀
+=	
+
+COMPLICADO TERMINAR
+
+
+
+
+
+

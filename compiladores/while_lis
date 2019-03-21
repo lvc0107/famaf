@@ -1,0 +1,39 @@
+
+Considere el lenguaje imprerativo con fallas, input y output.
+
+a) De los primeros tres elementos de la cadena ω cuyo supremo es la denotación
+del programa: x := 1 ; while x > 0 do !x.
+b) ¿Es ω una cadena interesante?
+
+
+
+las tres primeras aproximaciones se cuelgan!
+En un ciclo con la guarda true la única forma en que cualquier
+aproximación finita no haya un ⊥ metido entre ι_out ó ι_in es
+con una falla. 
+
+
+F w σ = w([[!x]]σ ) si x > 0
+
+
+F w σ = ι_out (σ x, w σ)
+
+
+ahora calculemos F ⊥ σ, F (F ⊥) σ, F (F(F ⊥)) σ
+
+F ⊥ σ = ι_out(σx, ⊥ σ) = ι_out(σx,⊥)
+F (F ⊥) σ  =  ι_out(σx, (F ⊥) σ) = ι_out(σx, ι_out(σx, ⊥))
+F (F² ⊥) σ  =  ι_out(σx, (F² ⊥) σ)  
+                = ι_out(σx, ι_out(σx, F ⊥ σ)) 
+                = ι_out(σx, ι_out(σx, ι_out(σx, ⊥)))
+con σx = 1
+
+
+
+El orden de Omega es el siguiente
+- ⊥ ≤ a, para cualquier a en Omega
+- ι_term σ ≤ ι_term σ
+- ι_abort σ ≤ ι_abort σ
+- ι_out(n,a) ≤ ι_out(n,b) sii a ≤ b (esto en Omega)
+- ι_in f ≤ ι_in g, sii para todo n ∈ ℕ, f n ≤ g n (esto en Omega)
+

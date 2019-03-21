@@ -1,0 +1,62 @@
+
+rec(λfx if x <= 1 then 1 else x * f(x-1))2
+
+Evaluacion Normal:
+
+ e(rec e) = z
+______________
+rec e => z
+
+
+Ejemplo que demuestra que no siempre hay un loop ∞
+
+rec(λx <0, x>) =>
+	(λx <0, x>)(rec(λx <0, x>)) =>
+ 		<0, rec(λx <0, x>)> =>
+ 		<0, rec(λx <0, x>)>. pues una tupla ya es FC
+	=>
+<0, rec(e)>
+
+
+Esto nos dice que para que la recursion se efecute correctamente
+el argumento 'e' ∈ a Vfun  y ademas debe contener una llamada recursiva
+
+
+llamemos fact = λfx if x <= 1 then 1 else x * f(x-1).  # aca parece que λfx ≡ λfλx
+
+
+(rec fact)2 => (aplicamos regla de aplicacion)
+a)	rec fact =>
+aa)		fact (rec fact) =>
+aaa)		fact => fact = (λfx if x <= 1 then  else x * f(x -1)) 
+aab)		λx if x <= 1 then 1 else x *  (rec fact(x -1))
+		=> λx if x <= 1 then 1 else x *  (rec fact(x -1))
+ab)	  => λx if x <= 1 then 1 else x *  (rec fact(x -1))
+b)  if 2 <= 1 then 1 else 2 *  (rec fact(2 - 1))
+	 => 2 * (rec fact(2 - 1))
+ba)			2 => 2
+bb) 	 (rec fact(2 - 1)) =>  
+bba) 	 	rec fact = fact (rec fact) =>
+bbaa)			fact => fact	
+bbab)			λx if x <= 1 then 1 else x *  (rec fact(x -1)) =>
+			λx if x <= 1 then 1 else x *  (rec fact(x -1))
+bbb)	if (2 - 1) <= 1 then 1 else x *  (rec fact((2 - 1) - 1))
+fin bb)		=> 1
+		=> 2*1 =2
+fin b => 2
+=> 2
+
+
+Semantica denotacional  =
+
+[[(rec e)2]]η =
+= (λh ∈ Vfun h*[[2]])fun*([[rec e]]η)
+
+[[ rec(λfx if x <= 1 then 1 else x * f(x-1)) ]]η  
+= (λf ∈ Vfun YVfun f)fun*([[λfx if x <= 1 then 1 else x * f(x-1) ]]η)
+
+[[λfx if x <= 1 then 1 else x * f(x-1))2 ]]η = 
+(λh ∈ Vfun )
+
+
+

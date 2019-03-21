@@ -1,0 +1,295 @@
+Lenguaje de predicados
+
+================================
+LIS
+
+[[newvar v := e in c]]σ = (λσ' ∈ Σ [σ'| v: σv])†([[c]][σ | v: [[e]]]σ)
+[[c; c']]σ = ([[c']]σ)*([[c]]σ)
+[[catchin c in c']]σ = ([[c']]σ)+([[c]]σ)
+[[v := e]]σ = ιterm([σ | v: [[e]]σ])
+[[!e]]σ = ιout([[e]]σ, σ)
+[[?v]]σ = ιin(λn ∈ Z [σ |v:n])
+[[skip]]σ = ιtermσ
+
+f*x = { ⊥  				si x = ⊥
+		ιabortσ	 		si x = ιabortσ
+		fσ				si x = ιtermσ
+		ιout(n, f*w)	si x = ιout(n, w)
+		ιin(f*.g)		si x = ιing
+
+
+
+f+x = { ⊥  				si x = ⊥
+		fσ		 		si x = ιabortσ
+		ιtermσ			si x = ιtermσ
+		ιout(n, f+w)	si x = ιout(n, w)
+		ιin(f+.g)		si x = ιing		
+
+
+f†x = { ⊥  				si x = ⊥
+		ιabort(fσ)		si x = ιabortσ
+		ιterm(fσ)		si x = ιtermσ
+		ιout(n, f†w)	si x = ιout(n, w)
+		ιin(f†.g)		si x = ιing				
+================================
+CL
+[[v]]η = ηv
+[[ee']]η = ϕ([[e]]η)([[e']]η)
+[[λve]]η = ψ(λd ∈ D∞ [[e]][η |v:d]
+
+Semantica Normal
+[[v]]η = ηv
+[[ee']]η = ϕ⫫([[e]]η)([[e']]η)
+[[λve]]η = ι⊥.ψ(λd ∈ D [[e]][η |v:d]
+
+
+Semantica Eager
+[[v]]η =  ι⊥(ηv)
+[[ee']]η = ϕ⫫([[e]]η)⫫([[e']]η)
+[[λve]]η = ι⊥.ψ(λz ∈ V [[e]][η |v:z]
+
+
+================================
+Aplicativo Eager
+
+[[v]]η = ιnorm(ηv)
+[[e,e']]η = (λf ∈ Vfun f*[[e']]η)*([[e]]η)
+[[λve]]η = ιnorm(jfun(λz ∈ V [[e]][η|v:z])))
+
+[[<e₀,...,en>]]η =
+(λz₁ ∈ V 
+	(λz₂ ∈ V )
+		...
+		(λzn ∈ V )
+			ιnorm(ιtuple(z₁,z₂, ... ,zn))
+		)* ([[en]]η')
+	)* ([[e₂]]η₂)
+)* ([[e₁]]η)
+
+[[let v = e₀ in e]]η = (λve)e₀
+= (λf ∈ Vfun f*([[e₀]η]))fun*([[λve]]η)
+= (λf ∈ Vfun f*([[e₀]η]))fun*(ιnorm(ιfun(λz ∈ V [[e]][η|v:z]η)))
+= (λf ∈ Vfun f*([[e₀]η]))fun(ιfun(λz ∈ V [[e]][η|v:z]η))
+= (λf ∈ Vfun f*([[e₀]η]))(λz ∈ V [[e]][η|v:z]η)
+= (λz ∈ V [[e]][η|v:z]η)*([[e₀]η])
+
+
+[[letrec f = λve₀ in e]]η 
+= [[e]][η|f: ιfun g] 
+; g = Yvfun F;  Fⁱ⊥V->D
+Fwz = [[e₀]][η| f: ιfun w | v:z]
+
+================================
+Aplicativo Normal
+
+[[v]]η = ηv
+[[e,e']]η = (λf ∈ Vfun f[[e']]η)*([[e]]η)
+[[λve]]η = ιnorm(jfun(λd ∈ D [[e]][η|v:d])))
+
+[[<e₀,...,en>]]η = ya esta en forma canonica
+[[e|k|]] = (λt ∈ VTuple { t.k si k < |t|
+						err   c.c.
+						} )tuple*([[e]]η)
+
+[[rec e]]η  = (λf ∈ Vfun Yf)fun*([[e]]η)
+# TODO ENTENDER
+
+Evaluacion
+
+
+================================
+ISWIM 
+[[v]]ησ = ιnorm(σ,ηv)
+[[e,e']]ησ = (λ<σ',f> ∈ ΣxVfun f*[[e']]η σ')*([[e]]ησ)
+[[λve]]ησ = ιnorm(σ(jfun(λ<σ',z> ∈ ΣxV[[e]]ησ')))
+
+[[letrec f = λve₀ in e]]ησ 
+= [[e]][η|f: ιfun g]σ 
+; g = Yvfun F;  Fⁱ⊥D->D
+Fw<σ,z> = [[e₀]][η| f: ιfun w | v:z]
+
+[[<e₀,...,en>]]ησ =
+
+(λ<σ₁,z₁> ∈ ΣxV 
+	(λ<σ₂,z₂> ∈ ΣxV )
+		...
+		(λ<σ'n',zn> ∈ ΣxV )
+			ιnorm( σ', ιtuple(z₁,z₂, ... ,zn))
+		)* ([[en]]η'σ')
+	)* ([[e₂]]η₂σ₂)
+)* ([[e₁]]ησ)
+[[e|k|]] = (λt ∈ VTuple { ιnorm(t.k) si k < |t|
+						err   c.c.
+						} )tuple*([[e]]η)
+
+
+[[ref e]]ησ = (λ<σ',z> ∈ ΣxV ιnorm(<[σ| r:z],ιrefr >)) *([[e]]ησ ). con r = new(σ')
+[[val e]]ησ = (λ<σ',r>  ∈ Σx Vref { ιnorm<σ' σ'r>
+									err if  r ∉ dom(σ')
+								 } ) ref* ([[e]]ησ)
+
+[[e:= e']]ησ = (λ<σ',r>  ∈ Σx Vref (λ<σ'', z>  ∈ Σx V 
+									ιnorm< [σ''|r :z], z>)*([[e']]ησ'))ref* ([[e]]ησ)
+
+[[e == e']]ησ = (λ<σ',r>  ∈ Σx Vref (λ<σ'', r2>  ∈ Σx Vref 
+									ιnorm< σ'', ιbool<r ==r2 >>)ref*([[e']]ησ'))ref* ([[e]]ησ)
+
+
+
+let v = e₀ in e = (λve)e₀
+[[let v = e₀ in e]]ησ = [[(λve)e₀]]ησ
+= (λ<σ',f> ∈ ΣxVfun f*([[e₀]ησ'))fun*([[λve]]ησ)
+= (λ<σ',f> ∈ ΣxVfun f*([[e₀]ησ'))fun*(ιnorm(< σ, ιfun(λ <σ,z> ∈ ΣxV [[e]][η|v:z]ησ)>))
+= (λ<σ',f> ∈ ΣxVfun f*([[e₀]ησ'))fun(<σ, ιfun(λ< σ, z> ∈ ΣxV [[e]][η|v:z]ησ)>)
+= (λ<σ',f> ∈ ΣxVfun f*([[e₀]ησ'))(λ<σ,z> ∈ ΣxV [[e]][η|v:z]ησ)
+= (λ<σ, z> ∈ ΣxV [[e]][η|v:z]ησ)*([[e₀]ησ])
+
+= [[e₀;e]] = let v = e₀ in e PERO CON V ∉ FV(e)
+
+newvar v = e₀ in e = let v = ref e₀ in e
+[[ newvar v = e₀ in e ]]ησ = 
+
+si [[e]]ησ => ιnorm(<σ,z>)
+[[ newvar v := e₀ in e ]]ησ = 
+[[e]][η | v : ιref r][σ|r :z]
+
+[[skip]]ησ = <>
+while e₀ do e = letrec w = λv if e₀ then e; w<> else skip in w<>
+[[ while e₀ do e]]ησ = [[letrec w = λv if e₀ then e; w<> else skip in w<>]]ησ
+
+Fwwz = [[ if e₀ then e; w<> else skip]] [η| w ιfun ww | v: z]σ
+
+=========================================================
+semantica operacional LIS
+
+_________________
+<skip,σ> ->  σ
+
+______________________________
+< v:= e, σ> -> [σ| v: [[e]]σ]
+
+
+	<c,σ> -> σ'
+______________________
+<c;c',σ> -> <c', σ'>
+
+
+	<c,σ> -> <c₀, σ'>
+______________________
+<c;c',σ> -> <c₀;c', σ'>
+
+
+	<c,σ> -> <<abort, σ'>>
+______________________
+<c;c',σ> -> <<abort, σ'>>
+
+
+	<c,σ> -> σ'
+_____________________________________
+<catchin c with c', σ> ->  σ'
+
+
+	<c,σ> -> <c₀,σ'>
+____________________________________________________
+<catchin c with c', σ> ->  <catchin c₀ with c', σ'>
+
+
+	<c,σ> -> <abort,σ'>
+____________________________________________________
+<catchin c with c', σ> ->  <c', σ'>
+
+
+	e -> True 
+______________________
+<if e then c else c', σ> -> <c , σ>
+
+	e -> False 
+_____________________________________
+<if e then c else c', σ> -> <c', σ>
+
+
+	<c,σ> -> σ'
+_____________________________________
+<catchin c with c', σ> ->  σ'
+
+
+	<c,σ> -> <c₀,σ'>
+____________________________________________________
+<catchin c with c', σ> ->  <catchin c₀ with c', σ'>
+
+
+	<c,σ> -> <abort,σ'>
+____________________________________________________
+<catchin c with c', σ> ->  <c', σ'>
+
+
+
+	<c, [σ| v:[[e]]σ] > -> < c', σ'>
+____________________________________________________
+<newvar v:= e in c, σ> ->  <newvar v: = σ'v  c', [σ'| v: [[e]]σ]>
+
+
+	<c, [σ| v:[[e]]σ] > -> σ'
+____________________________________________________
+<newvar v:= e in c, σ> ->  [σ'| v: [[e]]σ]
+
+
+	<c, [σ| v:[[e]]σ] > -> < abort, σ'>
+____________________________________________________
+<newvar v:= e in c, σ> ->  <abort, [σ'| v: [[e]]σ]>
+
+
+	[[b]]σ -> True 
+_________________________
+< while b do c, σ> ->  σ
+
+
+
+	[[b]]σ -> False
+_________________________
+< while b do c, σ> ->  <c; while b do c, σ> -> 
+
+
+
+=========================================================
+Evaluacion CL Normal
+
+	e = > λve' e'/v->e₀ => z
+_____________________________
+	< ee₀> => z 
+
+
+TODO COMPLETAR
+_____________________________
+	< rec e > => z 
+
+
+=========================================================
+Evaluacion CL Eager
+
+
+e = > λve' e₀ => z'  e'/v->z' => z
+_________________________
+	< ee₀> => z 
+
+
+TODO COMPLETAR
+_________________________
+	<<e₀, ..., en> => z 
+
+
+=========================================================
+Evaluacion Aplicativo
+
+=========================================================
+
+Evaluacion ISWIM
+
+si ewhile = if e₀ then e; w<> else skip
+
+while e₀ do e = letrec w = λv ewhile in w<>
+
+denotamos (similar a sementica operacional)
+
+ewhile* = letrec w = λv ewhile in ewhile
+
