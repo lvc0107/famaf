@@ -13,6 +13,22 @@ J = 0;
 grad = zeros(size(theta));
 
 
+%size_theta = size(theta)
+
+%size_X = size(X)
+
+
+%size_y  = size(y)
+
+%size_lambda = size(lambda)
+ 
+ 
+%size_grad = size(grad)
+ 
+ 
+%size_J = size(j)
+ 
+
 % ====================== YOUR CODE HERE ======================
 % Instructions: Compute the cost of a particular choice of theta.
 %               You should set J to the cost.
@@ -53,16 +69,15 @@ grad = zeros(size(theta));
 #J0 = 1/m * sum_0 + regularization_term;
 
 # vectorized approach
-regularization_term = lambda/(2*m) * sum(theta(2:length(theta)).^2);
+regularization_term = lambda/(2*m) * sum(theta(2: end).^2);
 z =  X * theta;
 hx_i = 1./(1 + exp(-z));
-J = 1./m * sum((-y .* log(hx_i)) - (1 - y) .* log(1 - hx_i)) + regularization_term
+J = 1./m * sum((-y .* log(hx_i)) - (1 - y) .* log(1 - hx_i)) + regularization_term;
 % =============================================================
 
 grad = 1/m * sum((hx_i - y) .* X(:, :));
 theta1 = theta';
-n = length(grad); 
-grad(:,2:n) = grad(:,2:n) + lambda/m .* theta1(:,2:n);
-
+grad(:,2: end) = grad(:, 2: end) + lambda/m .* theta1(:, 2: end);
+grad = grad';
 
 end
