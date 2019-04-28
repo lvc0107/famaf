@@ -75,9 +75,8 @@ hx_i = 1./(1 + exp(-z));
 J = 1./m * sum((-y .* log(hx_i)) - (1 - y) .* log(1 - hx_i)) + regularization_term;
 % =============================================================
 
-grad = 1/m * sum((hx_i - y) .* X(:, :));
-theta1 = theta';
-grad(:,2: end) = grad(:, 2: end) + lambda/m .* theta1(:, 2: end);
+grad = 1/m .* sum((hx_i - y) .* X(:, :)); % check why this opertation transpose grad (from column to row)
 grad = grad';
+grad(2: end, :) = grad(2: end, :) + lambda/m .* theta(2: end, :);
 
 end
