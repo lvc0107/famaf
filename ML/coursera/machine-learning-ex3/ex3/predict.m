@@ -4,7 +4,6 @@ function p = predict(Theta1, Theta2, X)
 %   trained weights of a neural network (Theta1, Theta2)
 
 % Useful values
-m = size(X, 1);
 num_labels = size(Theta2, 1);
 
 % You need to return the following variables correctly 
@@ -21,13 +20,19 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+m = size(X, 1);
+a1 = [ones(m, 1) X];
+z2 = a1 * Theta1';
 
+m = size(z2, 1)
+a2 = [ones(m, 1) sigmoid(z2)];
+z3 = a2 * Theta2';
 
+a3 = sigmoid(z3);
 
+[max_predict, max_index] = max(a3, [], 2);
 
-
-
-
+p = max_index;
 
 % =========================================================================
 
