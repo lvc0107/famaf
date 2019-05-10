@@ -63,29 +63,123 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
+# hypothesis calculus
+
+K = num_labels;
+y_vect = eye(K); 
+#size_y_vect = size(y_vect)
 
 
 
+#size_theta1 = size(Theta1)
+#size_theta2 = size(Theta2)
+
+a1 = [ones(m, 1) X];
+#size_a1 = size(a1)
+
+z2 = a1 * Theta1';
+#size_z2 = size(z2)
+
+m = size(z2, 1);
+a2 = [ones(m, 1) sigmoid(z2)];
+#size_a2 = size(a2)
+
+z3 = a2 * Theta2';
+#size_z3 = size(z3)
+
+a3 = sigmoid(z3); # = to h_theta(x)
+#size_a3 = size(a3)
+
+# Regularization term calculus
+
+rows_theta1 = size(Theta1, 1);
+columns_theta1 = size(Theta1, 2);
+
+sum_1 = 0;
+for j = 1: rows_theta1
+    inner_sum = 0;
+    for k = 2: columns_theta1
+        inner_sum = inner_sum + Theta1(j, k)^2;
+    end
+    sum_1 = sum_1 + inner_sum;
+end    
+
+rows_theta2 = size(Theta2, 1);
+columns_theta2 = size(Theta2, 2);
+
+sum_2 = 0;
+for j = 1: rows_theta2
+    inner_sum = 0;
+    for k = 2: columns_theta2
+        inner_sum = inner_sum + Theta2(j, k)^2;
+    end
+    sum_2 = sum_2 + inner_sum;
+end 
+
+regularization_term = lambda/(2*m) * (sum_1 + sum_2);
 
 
+# Cost function calculus
+sum_cost = 0;
+for i = 1 : m
+    sum_temp = 0;
+    for j = 1 : K
+        y_k = y_vect(j, y(i));
+        hx_k = a3(i, j);
+        sum_temp = sum_temp + [( -y_k * log(hx_k) - (1 - y_k) * log(1 - hx_k))];
+    end
+    sum_cost = sum_cost + sum_temp;
+end
 
-
-
-
-
-
-
-
-
-
-
-
-% -------------------------------------------------------------
+J = 1/m * sum_cost + regularization_term;
 
 % =========================================================================
 
+# BACK PROPAGATION
+# Gradient 
+
+d3 = zeros(size(a3));
+#size_d3 = size(d3)
+#d32 = zeros(size(a3));
+d2 = zeros(size(a2));
+#size_d2 = size(d2)
+
+d2_final = d2(: ,2: end);
+#size_d2_final = size(d2_final)
+
+#Theta1_grad_size = size(Theta1_grad)
+#Theta2_grad_size = size(Theta2_grad)
+
+for i = 1 : m
+    d3(i, :) = a3(i, :) - y_vect(y(i), :);
+    d2(i, :) = d3(i, :) * Theta2;
+    d2_final(i, :) = d2(i, 2: end) .* sigmoidGradient(z2(i,:));
+end
+
+
+P = size(Theta1, 1);
+Q = size(Theta1, 2);
+
+for i = 1: P
+    for j = 1: Q
+        temp = (d2_final'(i,:) * a1(:, j));
+        Theta1_grad(i,j) = Theta1_grad(i,j) + temp;
+    end
+end
+
+
+P = size(Theta2, 1);
+Q = size(Theta2, 2);
+
+for i = 1: P
+    for j = 1: Q
+        temp = (d3'(i,:) * a2(:, j));
+        Theta2_grad(i,j) = Theta2_grad(i,j) + temp;
+    end
+end
+    
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
+grad = 1/m * grad;
 
 end
