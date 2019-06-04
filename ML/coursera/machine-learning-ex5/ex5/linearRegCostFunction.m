@@ -20,14 +20,14 @@ grad = zeros(size(theta));
 %
 
  
-function h = hyp(theta, X)
-   h = theta(1) + theta(2) * X(i, 2);
+function h = hyp(theta, X, i)
+   h = X(i, :) * theta;
 end
  
 % Iterative form 
 sum0 = 0;
 for i = 1 : m
-    sum0 = sum0 + (hyp(theta, X) -  y(i))^2;
+    sum0 = sum0 + (hyp(theta, X, i) -  y(i))^2;
 end
 
 n = length(theta); % number of attributes
@@ -43,10 +43,21 @@ J = 1/(2*m) * sum0 + reg_term;
 reg_term = lambda/(2*m) * sumsq(theta(2:end));
 J = 1/(2*m) * (X* theta - y)' * (X* theta - y) + reg_term;
  
+% GRADIENT
+for j = 1: length(theta)
+  sum = 0;
+  for i = 1 : m
+     sum = sum + (hyp(theta, X, i) - y(i))* X(i, j)';
+  end
+ 
+  if j == 1
+     grad(j) = (1/m * sum );
+  else
+     grad(j) = (1/m * sum ) + lambda/m * theta(j);
+  end
 
+end
 
 % =========================================================================
-
-grad = grad(:);
 
 end

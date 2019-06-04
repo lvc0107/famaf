@@ -32,27 +32,24 @@ end
 J = - (1/m * sum ) + lambda/(2*m) * sum_theta2;
 
 
-% TODO there is a bug here
-for j = 1: size(theta)
-
-  if j == 0
-      sum = 0;
-      for i = 1 : m
-        h_i = sigmoid(theta' * X(i, :)');
-        sum = sum + (h_i - y(i))* X(i, 0)';
-      end
-      grad(0) = (1/m * sum );
+% GRADIENT
+for j = 1: length(theta)
+  sum = 0;
+  for i = 1 : m
+     h_i = sigmoid(theta' * X(i, :)');
+     sum = sum + (h_i - y(i))* X(i, j)';
+  end
+ 
+  if j == 1
+     grad(j) = (1/m * sum );
   else
-      sum = 0;
-      for i = 1 : m
-        h_i = sigmoid(theta' * X(i, :)');
-        sum = sum + (h_i - y(i))* X(i, j)';
-      end
-      grad(j) = (1/m * sum ) + lambda/m * theta(j);
+     grad(j) = (1/m * sum ) + lambda/m * theta(j);
+  end
+
 end
 
 
-%grad
+
 
 % =============================================================
 
