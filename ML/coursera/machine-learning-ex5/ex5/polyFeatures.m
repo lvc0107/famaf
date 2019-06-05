@@ -15,9 +15,14 @@ X_poly = zeros(numel(X), p);
 %
 % 
 
-
-
-
+m = length(X)
+for i = 1: m
+  pol = [];
+  for j = 1: p
+    pol = [pol, X(i).^j];
+  end
+  X_poly(i, :) = pol;
+end
 
 
 % =========================================================================
